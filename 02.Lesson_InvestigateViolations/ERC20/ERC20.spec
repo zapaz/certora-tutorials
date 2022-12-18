@@ -60,6 +60,7 @@ rule balanceChangesFromCertainFunctions(method f, address user){
 // Checks that the totalSupply of the token is at least equal to a single user's balance
 // This rule breaks also on a fixed version of ERC20 -
 // why? understand the infeasible state that the rule start with 
+// invalid assertion : totalSupply >= all accounts balance, not only one or two
 rule totalSupplyNotLessThanSingleUserBalance(method f, address user) {
 	env e;
 	calldataarg args;
