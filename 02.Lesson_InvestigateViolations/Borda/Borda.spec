@@ -40,7 +40,7 @@ rule correctPointsIncreaseToContenders(address first, address second, address th
 
 }
 
-// Checks that a black listed voter cannaot get unlisted
+// Checks that a black listed voter cannot get unlisted
 rule onceBlackListedNotOut(method f, address voter){
     env e; calldataarg args;
     uint256 age; bool registeredBefore; bool voted; uint256 vote_attempts; bool black_listed_Before;
@@ -64,4 +64,3 @@ rule contendersPointsNondecreasing(method f, address contender){
 
     assert (pointsAfter >= pointsBefore);
 }
-

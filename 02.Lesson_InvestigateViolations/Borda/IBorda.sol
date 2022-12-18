@@ -7,7 +7,7 @@ pragma solidity ^0.7.0;
  * The election system follows the following rules:
  *
  * - Every user with an etheruem address is allowed to vote in the elections.
- * - A voter must register its address with some pesonal detail.
+ * - A voter must register its address with some personal detail.
  * - Once a voter has registered he/she's allowed to vote once to 3 distinct contenders as he/she wishes.
  * - The voter's 1st choice gets 3 points, their 2nd choice gets 2 points, and their 3rd choice gets 1 point.
  * - The 3 contenders has to be registerd as contenders.
