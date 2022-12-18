@@ -1,14 +1,13 @@
 pragma solidity ^0.8.7;
 
 interface IReserveList {
-    
     /**
      * @dev Details on assets in reserve mapping
-     * @param id - a unique id generated for the asset. 
+     * @param id - a unique id generated for the asset.
      * @note that the given id to a reserve asset is its location (index) in the underlying map
      * @param token - the token address
      * @param fee - a constant fee associated with trading this asset
-     */ 
+     */
     struct ReserveData {
         uint256 id;
         address lpToken;

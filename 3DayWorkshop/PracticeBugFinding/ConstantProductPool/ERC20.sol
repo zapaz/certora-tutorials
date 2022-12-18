@@ -45,7 +45,6 @@ contract ERC20 is Context {
 
     uint256 internal _totalSupply;
 
-
     function decimals() public view virtual returns (uint8) {
         return 18;
     }
@@ -58,7 +57,6 @@ contract ERC20 is Context {
         return _balances[account];
     }
 
-   
     function transfer(address recipient, uint256 amount) public virtual returns (bool) {
         _transfer(_msgSender(), recipient, amount);
         return true;
@@ -68,17 +66,12 @@ contract ERC20 is Context {
         return _allowances[owner][spender];
     }
 
-  
     function approve(address spender, uint256 amount) public virtual returns (bool) {
         _approve(_msgSender(), spender, amount);
         return true;
     }
 
-    function transferFrom(
-        address sender,
-        address recipient,
-        uint256 amount
-    ) public virtual returns (bool) {
+    function transferFrom(address sender, address recipient, uint256 amount) public virtual returns (bool) {
         uint256 currentAllowance = _allowances[sender][_msgSender()];
         if (currentAllowance != type(uint256).max) {
             require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
@@ -99,16 +92,11 @@ contract ERC20 is Context {
         uint256 currentAllowance = _allowances[_msgSender()][spender];
         require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
         _approve(_msgSender(), spender, currentAllowance - subtractedValue);
-        
 
         return true;
     }
 
-    function _transfer(
-        address sender,
-        address recipient,
-        uint256 amount
-    ) internal virtual {
+    function _transfer(address sender, address recipient, uint256 amount) internal virtual {
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
 
@@ -116,17 +104,13 @@ contract ERC20 is Context {
         require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
         _balances[sender] = senderBalance - amount;
         _balances[recipient] += amount;
-
     }
-
 
     function _mint(address account, uint256 amount) internal virtual {
         _totalSupply += amount;
         _balances[account] += amount;
-
     }
 
-   
     function _burn(address account, uint256 amount) internal virtual {
         require(account != address(0), "ERC20: burn from the zero address");
 
@@ -134,18 +118,12 @@ contract ERC20 is Context {
         require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
         _balances[account] = accountBalance - amount;
         _totalSupply -= amount;
-
     }
 
-    function _approve(
-        address owner,
-        address spender,
-        uint256 amount
-    ) internal virtual {
+    function _approve(address owner, address spender, uint256 amount) internal virtual {
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
 
         _allowances[owner][spender] = amount;
     }
-
 }

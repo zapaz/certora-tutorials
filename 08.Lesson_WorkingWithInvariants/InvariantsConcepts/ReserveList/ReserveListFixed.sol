@@ -9,7 +9,7 @@ import "./IReserveList.sol";
  * @note that the id in each reserve should correlate with the index of the token used as the key in underlyingList.
  *
  */
- 
+
 contract ReserveList is IReserveList {
     mapping(address => ReserveData) internal reserves;
     mapping(uint256 => address) internal underlyingList;
@@ -31,14 +31,9 @@ contract ReserveList is IReserveList {
         require(address(token) != address(0), "invalid token");
         bool alreadyAdded = reserves[token].id != 0 || underlyingList[0] == token;
         require(!alreadyAdded, "reserve is already in the database");
-        reserves[token] = ReserveData({
-            id: 0, 
-            lpToken: token, 
-            stableDebtToken: stableToken,
-            varDebtToken: varToken,
-            fee: fee
-            });
-        
+        reserves[token] =
+            ReserveData({id: 0, lpToken: token, stableDebtToken: stableToken, varDebtToken: varToken, fee: fee});
+
         // A loop designated to fill holes in the list.
         for (uint16 i = 0; i < reserveCount; i++) {
             if (underlyingList[i] == address(0)) {
@@ -54,7 +49,7 @@ contract ReserveList is IReserveList {
     }
 
     function removeReserve(address token) external override {
-        require (underlyingList[reserves[token].id] != address(0), "token is not in the system");
+        require(underlyingList[reserves[token].id] != address(0), "token is not in the system");
         underlyingList[reserves[token].id] = address(0);
         delete reserves[token];
         reserveCount = reserveCount - 1;

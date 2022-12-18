@@ -9,7 +9,7 @@ import "./IReserveList.sol";
  * @note that the id in each reserve should correlate with the index of the token used as key in underlyingList.
  *
  */
- 
+
 contract ReserveList is IReserveList {
     mapping(address => ReserveData) internal reserves;
     mapping(uint256 => address) internal underlyingList;
@@ -27,17 +27,12 @@ contract ReserveList is IReserveList {
         return reserveCount;
     }
 
-    function addReserve(address token, address stableToken, address varToken,  uint256 fee) external override {
+    function addReserve(address token, address stableToken, address varToken, uint256 fee) external override {
         bool alreadyAdded = reserves[token].id != 0;
         require(!alreadyAdded, "reserve is already in the database");
-        reserves[token] = ReserveData({
-            id: 0, 
-            lpToken: token, 
-            stableDebtToken: stableToken,
-            varDebtToken: varToken,
-            fee: fee
-            });
-        
+        reserves[token] =
+            ReserveData({id: 0, lpToken: token, stableDebtToken: stableToken, varDebtToken: varToken, fee: fee});
+
         // A loop designated to fill holes in the list.
         for (uint16 i = 0; i < reserveCount; i++) {
             if (underlyingList[i] == address(0)) {

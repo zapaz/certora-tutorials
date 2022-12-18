@@ -26,67 +26,66 @@ contract Pool is ERC20 {
     address token1;
     address owner;
 
-    uint token0Amount;
-    uint token1Amount;
-    uint K;
+    uint256 token0Amount;
+    uint256 token1Amount;
+    uint256 K;
 
     // assigning values on constructor - specifying 2 tokens and the owner is the creator of the pool
     constructor(address _token0, address _token1) {
         token0 = _token0;
         token1 = _token1;
         owner = msg.sender;
-    }    
-    
+    }
+
     // initializing the pool according to the amount of tokens sent by the creator.
     // the creator receives 100,000 LP tokens (shares) in exchange.
     function init_pool() public {
         require(msg.sender == owner);
         token0Amount = IERC20(token0).balanceOf(address(this));
         token1Amount = IERC20(token1).balanceOf(address(this));
-        
-        K = token0Amount * token1Amount; 
+
+        K = token0Amount * token1Amount;
         balances[owner] = 100000;
         total = balances[owner];
     }
 
     // adds liquidity to a pool
-    function add_liquidity() public returns (uint) {
+    function add_liquidity() public returns (uint256) {
         // calculate added token0, token1 amounts
-        uint added0 = IERC20(token0).balanceOf(address(this)) - token0Amount;
-        uint added1 = IERC20(token1).balanceOf(address(this)) - token1Amount;
+        uint256 added0 = IERC20(token0).balanceOf(address(this)) - token0Amount;
+        uint256 added1 = IERC20(token1).balanceOf(address(this)) - token1Amount;
 
         // deposit to LP token
-        uint units = mint(msg.sender, added0, added1);
-        uint LP_total_supply = total;
+        uint256 units = mint(msg.sender, added0, added1);
+        uint256 LP_total_supply = total;
 
-        K = (K / (LP_total_supply-units)) * (LP_total_supply);
-        
+        K = (K / (LP_total_supply - units)) * (LP_total_supply);
+
         sync();
         return units;
     }
 
     // removes liqudity from a pool
-    function remove_liquidity(uint LP_tokens) public {
+    function remove_liquidity(uint256 LP_tokens) public {
         // sync();      // add sync() here to solve the bug
         burn(msg.sender, LP_tokens);
-        uint LP_total_supply = total;
+        uint256 LP_total_supply = total;
         K = K * LP_total_supply / (LP_total_supply + LP_tokens);
     }
-    
+
     // Automated Market Maker (AMM) - calculating the exchange rate of a desired exchange
     function swap(address from_token) public {
         require((from_token == token0 || from_token == token1), "Must be toekn0 or token1");
-        address to_token = from_token == token0 ?  token1 : token0;
-   
+        address to_token = from_token == token0 ? token1 : token0;
+
         // get balance for the token_from in user's account and transfer it to the pool
-        uint from_token_balance = IERC20(from_token).balanceOf(msg.sender);
+        uint256 from_token_balance = IERC20(from_token).balanceOf(msg.sender);
         IERC20(from_token).transferFrom(msg.sender, address(this), from_token_balance); // from customer to pool
 
         // DONT UNDERSTAND
-        uint to_token_send = IERC20(from_token).balanceOf(msg.sender) * IERC20(to_token).balanceOf(msg.sender) - K;
+        uint256 to_token_send = IERC20(from_token).balanceOf(msg.sender) * IERC20(to_token).balanceOf(msg.sender) - K;
         IERC20(to_token).transfer(msg.sender, to_token_send); // From the pool to the customer
         sync();
-        
     }
 
     function getContractAddress() public view returns (address) {
@@ -105,34 +104,34 @@ contract Pool is ERC20 {
         token0Amount = IERC20(token0).balanceOf(address(this));
         token1Amount = IERC20(token1).balanceOf(address(this));
     }
-    
-    // mints LP tokens to user
-    function mint(address user, uint amount0, uint amount1) internal returns (uint){
-        uint totalBalance0 = IERC20(token0).balanceOf(address(this));
-        uint totalBalance1 = IERC20(token1).balanceOf(address(this));
 
-        // minting deserved from supplying token 0 or 1 is the portion of the user's 
+    // mints LP tokens to user
+    function mint(address user, uint256 amount0, uint256 amount1) internal returns (uint256) {
+        uint256 totalBalance0 = IERC20(token0).balanceOf(address(this));
+        uint256 totalBalance1 = IERC20(token1).balanceOf(address(this));
+
+        // minting deserved from supplying token 0 or 1 is the portion of the user's
         // supplied liquidity out of the total assets in the pool before the addition.
-        uint mint_0 = total * amount0 / (totalBalance0-amount0);
-        uint mint_1 = total * amount1 / (totalBalance1-amount1);
+        uint256 mint_0 = total * amount0 / (totalBalance0 - amount0);
+        uint256 mint_1 = total * amount1 / (totalBalance1 - amount1);
 
         // the liquidity providers are being incentivised to supply liquidity based on the existing ratio.
         // if the user choose to deviate from the ratio, they will get LP tokens according to the lower of the 2 amounts.
         // e.g. if the pool at the moment has 1:3 ratio between ETH and USDC, and the user want to supply lquidity
         // of 3 ETH and 10 USDC, they will receieve 3 LP tokens, as if they supplied 3 ETH and 9 USDC.
-        uint to_mint = mint_0 < mint_1 ? mint_0 : mint_1;
+        uint256 to_mint = mint_0 < mint_1 ? mint_0 : mint_1;
         balances[user] += to_mint;
         total += to_mint;
         return to_mint;
     }
 
-    function burn(address user, uint LP_tokens) internal  {
+    function burn(address user, uint256 LP_tokens) internal {
         require(balances[user] >= LP_tokens);
         // calculates the amount of token0 or token1 that the user is eligble to receive.
         // it is the portion of his/her LP tokens out of the total.
-        uint pay_in_0 = LP_tokens * IERC20(token0).balanceOf(address(this)) / total;
-        uint pay_in_1 = LP_tokens * IERC20(token1).balanceOf(address(this)) / total;
-        
+        uint256 pay_in_0 = LP_tokens * IERC20(token0).balanceOf(address(this)) / total;
+        uint256 pay_in_1 = LP_tokens * IERC20(token1).balanceOf(address(this)) / total;
+
         // updates the user's, total, and contract amount of LP token count
         balances[user] -= LP_tokens;
         total -= LP_tokens;
@@ -142,6 +141,5 @@ contract Pool is ERC20 {
         // transfer liquidity token to user
         IERC20(token0).transfer(user, pay_in_0);
         IERC20(token1).transfer(user, pay_in_1);
-    }    
-    
+    }
 }

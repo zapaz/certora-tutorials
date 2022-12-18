@@ -4,28 +4,28 @@ pragma solidity ^0.8.4;
 
 contract ERC20 {
     uint256 total;
-    mapping (address => uint256) balances;
-    mapping (address => mapping (address => uint256)) allowance;
+    mapping(address => uint256) balances;
+    mapping(address => mapping(address => uint256)) allowance;
 
     string public name;
     string public symbol;
-    uint public decimals;
+    uint256 public decimals;
 
     function myAddress() public returns (address) {
         return address(this);
     }
 
-    function add(uint a, uint b) internal pure returns (uint256) {
-        uint c = a +b;
-        require (c >= a);
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+        uint256 c = a + b;
+        require(c >= a);
 
         return c;
     }
 
-    function sub(uint a, uint b) internal pure returns (uint256) {
-        require (a>=b);
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+        require(a >= b);
 
-        return a-b;
+        return a - b;
     }
 
     function totalSupply() external view returns (uint256) {
@@ -59,16 +59,15 @@ contract ERC20 {
         allowance[sender][msg.sender] = sub(allowance[sender][msg.sender], amount);
 
         return true;
-    }   
+    }
 
-    function increase_allowance(address to_user, uint inc_amount) external {
+    function increase_allowance(address to_user, uint256 inc_amount) external {
         require(allowance[msg.sender][msg.sender] >= inc_amount);
         allowance[msg.sender][msg.sender] -= inc_amount;
         allowance[msg.sender][to_user] += inc_amount;
     }
 
-    
-    function decrease_allowance(address from_user, uint dec_amount) external {
+    function decrease_allowance(address from_user, uint256 dec_amount) external {
         require(allowance[msg.sender][from_user] >= dec_amount);
         allowance[msg.sender][from_user] -= dec_amount;
         allowance[msg.sender][msg.sender] += dec_amount;
@@ -77,24 +76,23 @@ contract ERC20 {
     /*
      * 
      */
-    function mint(address user, uint amount) internal {
+    function mint(address user, uint256 amount) internal {
         /* 
             user - assign the minted shares to user.
             amount - number of shares to mint.
         */
         total += amount;
-        balances[user] += amount;        
+        balances[user] += amount;
     }
 
-    function burn(address user, uint amount) internal {
+    function burn(address user, uint256 amount) internal {
         /* 
             user - burn the shares from user.
             amount - number of shares to burn.
         */
-        
-        balances[user] -= amount;        
+
+        balances[user] -= amount;
         total -= amount;
         msg.sender.call{value: amount}("");
     }
-
 }

@@ -1,6 +1,6 @@
 /**
- *Submitted for verification at Etherscan.io on 2019-04-21
-*/
+ * Submitted for verification at Etherscan.io on 2019-04-21
+ */
 
 // File: openzeppelin-solidity/contracts/token/ERC20/IERC20.sol
 
@@ -113,9 +113,9 @@ pragma solidity ^0.5.2;
 contract ERC20 is IERC20 {
     using SafeMath for uint256;
 
-    mapping (address => uint256) private _balances;
+    mapping(address => uint256) private _balances;
 
-    mapping (address => mapping (address => uint256)) private _allowed;
+    mapping(address => mapping(address => uint256)) private _allowed;
 
     uint256 private _totalSupply;
 
@@ -288,7 +288,6 @@ contract ERC20 is IERC20 {
 
 pragma solidity ^0.5.2;
 
-
 /**
  * @title ERC20Detailed token
  * @dev The decimals are only for visualization purposes.
@@ -300,7 +299,7 @@ contract ERC20Detailed is IERC20 {
     string private _symbol;
     uint8 private _decimals;
 
-    constructor (string memory name, string memory symbol, uint8 decimals) public {
+    constructor(string memory name, string memory symbol, uint8 decimals) public {
         _name = name;
         _symbol = symbol;
         _decimals = decimals;
@@ -332,7 +331,6 @@ contract ERC20Detailed is IERC20 {
 
 pragma solidity ^0.5.2;
 
-
 /**
  * @title Burnable Token
  * @dev Token that can be irreversibly burned (destroyed).
@@ -361,7 +359,7 @@ contract ERC20Burnable is ERC20 {
 pragma solidity ^0.5.0;
 
 contract FTT is ERC20, ERC20Detailed, ERC20Burnable {
-    constructor() ERC20Detailed('FTT', 'FTX Token', 18) public {
+    constructor() public ERC20Detailed("FTT", "FTX Token", 18) {
         _mint(msg.sender, 350_000_000 * 10 ** 18);
     }
 }

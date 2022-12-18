@@ -1,8 +1,9 @@
 pragma solidity ^0.8.7;
 
-/** Meeting Scheduler Overview
+/**
+ * Meeting Scheduler Overview
  * @dev This contract simulate a meeting scheduler for various uses.
- * 
+ *
  * The scheduler follows a very clear path through different states of meeting's life.
  * The system allows one to create a schedule, defining start & end of the meeting.
  * The scheduler also tracks the number of participants attending the meeting.
@@ -10,7 +11,7 @@ pragma solidity ^0.8.7;
  * - The meetings in the system are going through the following states - before creation they are
  * classified as UNINITIALIZED.
  *
- * - At creation the state change to PENDING, the start & end time are being set according to 
+ * - At creation the state change to PENDING, the start & end time are being set according to
  * organizer's order, and the num of participants are nullified.
  *
  * - At this point a meeting can be started by anybody if start time has arrived (change to STARTED),
@@ -21,9 +22,8 @@ pragma solidity ^0.8.7;
  */
 
 interface IMeetingScheduler {
-    
     enum MeetingStatus {
-        UNINITIALIZED, 
+        UNINITIALIZED,
         PENDING,
         STARTED,
         ENDED,
@@ -39,38 +39,22 @@ interface IMeetingScheduler {
     }
 
     // Gets the status of a specified meetingId
-    function getStateById(uint256 meetingId)
-        external
-        view
-        returns (MeetingStatus);
+    function getStateById(uint256 meetingId) external view returns (MeetingStatus);
 
     // Gets the start time of a specified meetingId
-    function getStartTimeById(uint256 meetingId)
-        external
-        view
-        returns (uint256);
+    function getStartTimeById(uint256 meetingId) external view returns (uint256);
 
     // Gets the end time of a specified meetingId
     function getEndTimeById(uint256 meetingId) external view returns (uint256);
 
     // Gets the number of participants of a specified meetingId
-    function getNumOfParticipents(uint256 meetingId)
-        external
-        view
-        returns (uint256);
+    function getNumOfParticipents(uint256 meetingId) external view returns (uint256);
 
     // Gets the organizer of a specified meetingId
-    function getOrganizer(uint256 meetingId)
-        external
-        view
-        returns (address);
+    function getOrganizer(uint256 meetingId) external view returns (address);
 
     // Creates a registry of meetingId in the map and updating its details.
-    function scheduleMeeting(
-        uint256 meetingId,
-        uint256 startTime,
-        uint256 endTime
-    ) external;
+    function scheduleMeeting(uint256 meetingId, uint256 startTime, uint256 endTime) external;
 
     // Changes the status of a meeting to STARTED
     function startMeeting(uint256 meetingId) external;

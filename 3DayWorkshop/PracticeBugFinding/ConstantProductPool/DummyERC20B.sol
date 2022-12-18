@@ -11,7 +11,7 @@ contract DummyERC20B {
     function myAddress() public returns (address) {
         return address(this);
     }
-    
+
     function totalSupply() external view returns (uint256) {
         return t;
     }
@@ -37,11 +37,7 @@ contract DummyERC20B {
         return true;
     }
 
-    function transferFrom(
-        address sender,
-        address recipient,
-        uint256 amount
-    ) external returns (bool) {
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool) {
         b[sender] -= amount;
         b[recipient] += amount;
         a[sender][msg.sender] -= amount;
