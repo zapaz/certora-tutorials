@@ -26,7 +26,7 @@
 // Checks that when a meeting is created, the planned end time is greater than the start time
 rule startBeforeEnd(method f, uint256 meetingId, uint256 startTime, uint256 endTime) {
 	env e;
-    scheduleMeeting(e, meetingId, startTime, endTime);
+  scheduleMeeting(e, meetingId, startTime, endTime);
 
 	assert getStartTimeById(e, meetingId) < getEndTimeById(e, meetingId), "the created meeting's start time is not before its end time";
 }
@@ -36,6 +36,7 @@ rule startBeforeEnd(method f, uint256 meetingId, uint256 startTime, uint256 endT
 rule startOnTime(method f, uint256 meetingId) {
 	env e;
 	calldataarg args;
+	
 	uint8 stateBefore = getStateById(e, meetingId);
 	f(e, args); // call only non reverting paths to any function on any arguments.
 	uint8 stateAfter = getStateById(e, meetingId);
@@ -51,11 +52,12 @@ rule startOnTime(method f, uint256 meetingId) {
 rule checkStartedToStateTransition(method f, uint256 meetingId) {
 	env e;
 	calldataarg args;
+
 	uint8 stateBefore = getStateById(e, meetingId);
 	f(e, args);
 	
-	assert (stateBefore == 2 => (getStateById(e, meetingId) == 2 || getStateById(e, meetingId) == 4)), "the status of the meeting changed from STARTED to an invalid state";
-	assert ((stateBefore == 2 && getStateById(e, meetingId) == 4) => f.selector == endMeeting(uint256).selector), "the status of the meeting changed from STARTED to ENDED through a function other then endMeeting()";
+	assert (stateBefore == 2 => (getStateById(e, meetingId) == 2 || getStateById(e, meetingId) == 3)), "the status of the meeting changed from STARTED to an invalid state";
+	assert ((stateBefore == 2 && getStateById(e, meetingId) == 3) => f.selector == endMeeting(uint256).selector), "the status of the meeting changed from STARTED to ENDED through a function other then endMeeting()";
 }
 
 
@@ -65,6 +67,7 @@ rule checkStartedToStateTransition(method f, uint256 meetingId) {
 rule checkPendingToCancelledOrStarted(method f, uint256 meetingId) {
 	env e;
 	calldataarg args;
+
 	uint8 stateBefore = getStateById(e, meetingId);
 	f(e, args);
 	
@@ -78,9 +81,13 @@ rule checkPendingToCancelledOrStarted(method f, uint256 meetingId) {
 rule monotonousIncreasingNumOfParticipants(method f, uint256 meetingId) {
 	env e;
 	calldataarg args;
+	
+	uint256 stateBefore = getStateById(e, meetingId);
 	uint256 numOfParticipantsBefore = getNumOfParticipents(e, meetingId);
+	require( !(stateBefore == 0 && numOfParticipantsBefore != 0), "Impossible state" );
+
 	f(e, args);
-    uint256 numOfParticipantsAfter = getNumOfParticipents(e, meetingId);
+  uint256 numOfParticipantsAfter = getNumOfParticipents(e, meetingId);
 
 	assert numOfParticipantsBefore <= numOfParticipantsAfter, "the number of participants decreased as a result of a function call";
 }
