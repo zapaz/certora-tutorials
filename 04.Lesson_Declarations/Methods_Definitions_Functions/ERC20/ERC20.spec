@@ -1,5 +1,13 @@
-/* f.selecor
+methods{
+    totalSupply() returns (uint256) envfree
+    balanceOf(address) returns (uint256) envfree
+    allowance(address, address) returns (uint256) envfree
+    transfer(address, uint256) returns (bool)
+    approve(address, uint256) returns (bool)
+    transferFrom(address, address, uint256) returns (bool)
+}
 
+/* f.selecor
  * On the right side of the implication above we see a f.selector.
  * The use of f.selector is very similar to its use in solidity -
  * since f is a parametric method that calls every function in contract in parallel,
@@ -22,7 +30,7 @@ rule integrityOfTransfer(address recipient, uint256 amount) {
 // Checks that transferFrom() correctly decrease allowance of e.msg.sender
 rule integrityOfTransferFrom(address owner, address recipient, uint256 amount) {
 	env e;
-    require owner != recipient; // why is that necessary? try commenting this line out and see what happens
+ require owner != recipient; // why is that necessary? try commenting this line out and see what happens
 	uint256 allowanceBefore = allowance(e, owner, e.msg.sender);
 	transferFrom(e, owner, recipient, amount);
 	uint256 allowanceAfter = allowance(e, owner, e.msg.sender);

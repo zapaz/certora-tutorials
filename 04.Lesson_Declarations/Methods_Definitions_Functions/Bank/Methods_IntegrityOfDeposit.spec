@@ -6,7 +6,6 @@ methods{
 
 }
 
-
 rule integrityOfDeposit(uint256 amount) {
 	env e; 
 
@@ -16,4 +15,3 @@ rule integrityOfDeposit(uint256 amount) {
 
 	assert ( fundsBefore + amount == fundsAfter, "Deposit did not increase the funds as expected" );
 }
-
