@@ -1,3 +1,3 @@
 certoraRun BankFixed.sol:Bank --verify Bank:invariant.spec \
---solc solc7.6 \
---msg "$1"
+--send_only \
+--msg "$1" --rule can_withdraw

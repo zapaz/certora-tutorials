@@ -4,16 +4,15 @@ methods {
 	isActiveManager(address a) returns (bool) envfree
 }
 
-
+function validFund(uint256 fundId) returns bool {
+	address manager = getCurrentManager(fundId);
+	return manager != 0 && isActiveManager(manager);
+}
 
 rule uniqueManagerAsRule(uint256 fundId1, uint256 fundId2, method f) {
-	// assume different IDs
+	require validFund(fundId1) && validFund(fundId2);
 	require fundId1 != fundId2;
-	// assume different managers
 	require getCurrentManager(fundId1) != getCurrentManager(fundId2);
-	
-	// hint: add additional variables just to look at the current state
-	// bool active1 = isActiveManager(getCurrentManager(fundId1));			
 	
 	env e;
 	calldataarg args;
@@ -22,8 +21,3 @@ rule uniqueManagerAsRule(uint256 fundId1, uint256 fundId2, method f) {
 	// verify that the managers are still different 
 	assert getCurrentManager(fundId1) != getCurrentManager(fundId2), "managers not different";
 }
-
-
-// /* A version of uniqueManagerAsRule as an invariant */
-// invariant uniqueManagerAsInvariant(uint256 fundId1, uint256 fundId2)
-// 	fundId1 != fundId2 => getCurrentManager(fundId1) != getCurrentManager(fundId2) 
