@@ -57,7 +57,7 @@ This pre-condition is a state that should hold no matter what.  Therefore, it sh
 
 - [ ] Run the spec with line 9 as in the picture above to see if a violation rises.
 
-To avoid making mistakes by assuming things that can not be safely assumed, we introduce the simple concept of `requireInvariavt`.
+To avoid making mistakes by assuming things that can not be safely assumed, we introduce the simple concept of `requireInvariant`.
 
 </br>
 
@@ -271,7 +271,7 @@ invariant example(bytes32 hashId, env e)
 
 - [ ] Try to prove the following list of properties:
 
-    - [ ] Both lists are correlated - If we use the id of a token in `reserves` to retrieve a token in `underlyingList`, we get the same toke.
+    - [ ] Both lists are correlated - If we use the id of a token in `reserves` to retrieve a token in `underlyingList`, we get the same token.
     
     <details>
     <summary>Hint:</summary>
